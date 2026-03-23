@@ -39,7 +39,7 @@ export function AskQuestion() {
     <div className="bg-background flex min-h-screen flex-col">
       <div className="bg-card border-border border-b">
         <div className="mx-auto flex max-w-2xl items-center gap-3 px-4 py-4">
-          <Link to="/">
+          <Link to="/questions">
             <Button variant="ghost" size="sm" className="h-9 w-9 p-0">
               <ArrowLeft className="h-5 w-5" />
             </Button>

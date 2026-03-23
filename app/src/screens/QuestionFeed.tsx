@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { QuestionCard } from "../components/QuestionCard";
@@ -6,6 +7,10 @@ import { useQuestions } from "../context/QuestionsContext";
 
 export function QuestionFeed() {
   const { questions, toggleUpvote, isLoading, error, loadQuestions } = useQuestions();
+
+  useEffect(() => {
+    void loadQuestions();
+  }, [loadQuestions]);
 
   const sortedQuestions = [...questions].sort((a, b) => b.upvotes - a.upvotes);
 

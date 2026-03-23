@@ -71,7 +71,7 @@ export function QuestionDetail() {
             {loadError ?? "The question may not exist yet or this page was opened directly."}
           </p>
           <Button asChild>
-            <Link to="/">Back to Questions</Link>
+            <Link to="/questions">Back to Questions</Link>
           </Button>
         </Card>
       </div>
@@ -82,7 +82,7 @@ export function QuestionDetail() {
     <div className="bg-background min-h-screen pb-8">
       <div className="bg-card border-border sticky top-0 z-10 border-b">
         <div className="mx-auto flex max-w-2xl items-center gap-3 px-4 py-4">
-          <Link to="/">
+          <Link to="/questions">
             <Button variant="ghost" size="sm" className="h-9 w-9 p-0">
               <ArrowLeft className="h-5 w-5" />
             </Button>
