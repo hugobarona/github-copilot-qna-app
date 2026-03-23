@@ -1,0 +1,69 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug App (Server + Chrome)",
+      "type": "pwa-node",
+      "request": "launch",
+      "runtimeExecutable": "node",
+      "program": "${workspaceFolder}/app/node_modules/vite/bin/vite.js",
+      "args": [
+        "--configLoader",
+        "runner"
+      ],
+      "cwd": "${workspaceFolder}/app",
+      "envFile": "${workspaceFolder}/app/.env",
+      "console": "integratedTerminal",
+      "autoAttachChildProcesses": true,
+      "sourceMaps": true,
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/app/**",
+        "!**/node_modules/**"
+      ],
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "serverReadyAction": {
+        "pattern": "Local:\\s+(https?://\\S+)",
+        "action": "startDebugging",
+        "name": "Attach Chrome (Existing Vite Server)"
+      }
+    },
+    {
+      "name": "Debug Vite Server (Node only)",
+      "type": "pwa-node",
+      "request": "launch",
+      "runtimeExecutable": "node",
+      "program": "${workspaceFolder}/app/node_modules/vite/bin/vite.js",
+      "args": [
+        "--configLoader",
+        "runner"
+      ],
+      "cwd": "${workspaceFolder}/app",
+      "envFile": "${workspaceFolder}/app/.env",
+      "console": "integratedTerminal",
+      "autoAttachChildProcesses": true,
+      "sourceMaps": true,
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/app/**",
+        "!**/node_modules/**"
+      ],
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    },
+    {
+      "name": "Attach Chrome (Existing Vite Server)",
+      "type": "pwa-chrome",
+      "request": "launch",
+      "url": "http://localhost:5173",
+      "userDataDir": true,
+      "webRoot": "${workspaceFolder}/app",
+      "sourceMapPathOverrides": {
+        "/src/*": "${webRoot}/src/*",
+        "/*": "${webRoot}/*",
+        "webpack:///src/*": "${webRoot}/src/*"
+      }
+    }
+  ]
+}
