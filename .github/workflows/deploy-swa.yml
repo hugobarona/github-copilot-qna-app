@@ -1,0 +1,94 @@
+name: Deploy Azure Static Web App
+
+on:
+  push:
+    branches:
+      - main
+      - "**"
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  deploy_production:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    name: Deploy Production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Build and Deploy (Production)
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: upload
+          app_location: app
+          api_location: app/api
+          output_location: dist
+          production_branch: main
+
+  deploy_preview:
+    if: |
+      (github.event_name == 'push' && github.ref != 'refs/heads/main') ||
+      (github.event_name == 'pull_request' && github.event.action != 'closed')
+    runs-on: ubuntu-latest
+    environment: preview
+    name: Deploy Preview
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Resolve preview environment name
+        id: env_name
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            name="pr-${{ github.event.pull_request.number }}"
+          else
+            branch="${{ github.ref_name }}"
+            normalized=$(echo "$branch" | tr -cd '[:alnum:]' | tr '[:upper:]' '[:lower:]')
+            if [[ -z "$normalized" ]]; then
+              normalized="preview"
+            fi
+            name="${normalized:0:16}"
+          fi
+
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+          echo "Preview environment: $name"
+
+      - name: Build and Deploy (Preview)
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: upload
+          app_location: app
+          api_location: app/api
+          output_location: dist
+          production_branch: main
+          deployment_environment: ${{ steps.env_name.outputs.name }}
+
+  close_preview_on_pr_close:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    environment: preview
+    name: Close Preview Environment
+    steps:
+      - name: Close Pull Request Preview Environment
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          action: close
+          deployment_environment: pr-${{ github.event.pull_request.number }}
