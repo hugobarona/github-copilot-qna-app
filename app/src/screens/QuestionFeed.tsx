@@ -78,7 +78,7 @@ export function QuestionFeed() {
       <Link to="/ask" className="fixed right-6 bottom-6">
         <Button
           size="lg"
-          className="h-14 w-14 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90"
+          className="h-14 w-14 rounded-full bg-secondary text-secondary-foreground shadow-lg hover:bg-secondary/80"
           aria-label="Ask a question"
         >
           <Plus className="h-6 w-6" />
